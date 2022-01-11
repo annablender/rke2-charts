@@ -35,3 +35,22 @@
          imagePullPolicy: {{ .Values.autoscaler.image.pullPolicy }}
          resources:
  {{ toYaml .Values.autoscaler.resources | indent 10 }}
+@@ -79,6 +79,18 @@
+           successThreshold: {{ .Values.autoscaler.livenessProbe.successThreshold }}
+           failureThreshold: {{ .Values.autoscaler.livenessProbe.failureThreshold }}
+         {{- end }}
++        {{- if .Values.readinessProbe.enabled }}
++        readinessProbe:
++          httpGet:
++            path: /ready
++            port: 8181
++            scheme: HTTP
++          initialDelaySeconds: {{ .Values.readinessProbe.initialDelaySeconds }}
++          periodSeconds: {{ .Values.readinessProbe.periodSeconds }}
++          timeoutSeconds: {{ .Values.readinessProbe.timeoutSeconds }}
++          successThreshold: {{ .Values.readinessProbe.successThreshold }}
++          failureThreshold: {{ .Values.readinessProbe.failureThreshold }}
++        {{- end }}
+         command:
+           - /cluster-proportional-autoscaler
+           - --namespace={{ .Release.Namespace }}
